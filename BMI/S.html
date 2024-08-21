@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro Calculator</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>Macro Calculator</h1>
+    <form id="macroCalculatorForm">
+        <!-- Your form inputs here -->
+    </form>
+
+    <div id="results">
+        <!-- Display the results here -->
+    </div>
+
+    <script>
+        // JavaScript functions for calculations
+        function calculateMacros() {
+            // Get form values
+            const age = parseInt(document.getElementById('cage').value);
+            const gender = document.querySelector('input[name="csex"]:checked').value;
+            // Get other form values similarly
+            
+            // Perform calculations
+            // Add your calculation logic here
+            
+            // Display results
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <h2>Results</h2>
+                <p>Display calculated values here</p>
+            `;
+        }
+
+        // Event listener for form submission
+        document.getElementById('macroCalculatorForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            calculateMacros(); // Call the calculateMacros function
+        });
+    </script>
+</body>
+</html>

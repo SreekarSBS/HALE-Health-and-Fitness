@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMI Calculator with BMR and Meal Planning</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #3498db, #2ecc71);
+      color: black; /* Text color changed to black */
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #calculator {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 300px;
+    }
+    h1 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      width: calc(100% - 20px);
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background: linear-gradient(135deg, #3498db, #2ecc71);
+      color: #fff;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #2980b9, #27ae60);
+    }
+    #result {
+      font-weight: bold;
+      margin-top: 20px;
+      color: #333;
+    }
+    #additionalInfo {
+      color: #7f8c8d;
+      margin-top: 20px;
+    }
+    #bmr {
+      color: #333;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="calculator">
+    <h1>BMI</h1>
+  
+    <label for="weight">Weight (kg): </label>
+    <input type="text" id="weight" placeholder="Enter weight">
+    
+    <label for="height">Height (m): </label>
+    <input type="text" id="height" placeholder="Enter height">
+
+    <label for="age">Age (years): </label>
+    <input type="text" id="age" placeholder="Enter age">
+
+    <label for="gender">Gender:</label>
+    <select id="gender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+
+    <label for="activityLevel">Activity Level:</label>
+    <select id="activityLevel">
+      <option value="sedentary">Sedentary</option>
+      <option value="lightlyActive">Lightly Active</option>
+      <option value="moderatelyActive">Moderately Active</option>
+      <option value="veryActive">Very Active</option>
+      <option value="extraActive">Extra Active</option>
+    </select>
+    
+    <button onclick="calculateBMI()">Calculate</button>
+    
+    <div id="result"></div>
+    
+    <div id="additionalInfo"></div>
+
+    <div id="bmr"></div>
+
+    <div id="mealPlan"></div>
+
+    <!-- Div for displaying GIFs -->
+    <div id="gifContainer"></div>
+  </div>
+
+  <script>
+    function calculateBMI() {
+      var weight = parseFloat(document.getElementById('weight').value);
+      var height = parseFloat(document.getElementById('height').value);
+      var age = parseInt(document.getElementById('age').value);
+      var gender = document.getElementById('gender').value;
+      var activityLevel = document.getElementById('activityLevel').value;
+    
+      if (isNaN(weight) || isNaN(height) || isNaN(age)) {
+        alert('Please enter valid numeric values for weight, height, and age.');
+        return;
+      }
+    
+      var bmi = weight / (height ** 2);
+      document.getElementById('result').innerHTML = 'Your BMI is: ' + bmi.toFixed(2);
+    
+      // Calculate BMR using Mifflin-St Jeor Equation
+      var bmr;
+      if (gender === 'male') {
+        bmr = 10 * weight + 6.25 * height * 100 - 5 * age + 5;
+      } else {
+        bmr = 10 * weight + 6.25 * height * 100 - 5 * age - 161;
+      }
+
+      // Adjust BMR based on activity level
+      switch (activityLevel) {
+        case 'sedentary':
+          bmr *= 1.2;
+          break;
+        case 'lightlyActive':
+          bmr *= 1.375;
+          break;
+        case 'moderatelyActive':
+          bmr *= 1.55;
+          break;
+        case 'veryActive':
+          bmr *= 1.725;
+          break;
+        case 'extraActive':
+          bmr *= 1.9;
+          break;
+        default:
+          break;
+      }
+
+      document.getElementById('bmr').innerHTML = 'Your BMR is: ' + bmr.toFixed(2) + ' calories/day';
+    
+      // Provide additional information based on BMI and age
+      var additionalInfo = document.getElementById('additionalInfo');
+      if (age < 18) {
+        // Additional information for individuals under 18
+      } else {
+        // Additional information for adults
+      }
+
+      // Generate meal plan
+      var mealPlan = document.getElementById('mealPlan');
+      mealPlan.innerHTML = '<h2>Recommended Meal Plan</h2>';
+      var mealOptions = generateMealPlan(bmr, gender, bmi);
+      mealOptions.forEach(function(meal, index) {
+        mealPlan.innerHTML += '<h3>' + meal.type + ':</h3>';
+        mealPlan.innerHTML += '<p>' + meal.description + '</p>';
+      });
+    }
+
+    function generateMealPlan(bmr, gender, bmi) {
+      var mealOptions = [];
+      var caloriePerMeal = bmr / 3; // Dividing daily calorie intake into 3 meals
+
+      // Example meal options, you can customize these based on nutritional guidelines
+      if (bmi < 18.5) {
+        // Underweight
+        mealOptions.push({ type: 'Breakfast', description: 'Whole grain toast with avocado and scrambled eggs' });
+        mealOptions.push({ type: 'Lunch', description: 'Grilled chicken salad with quinoa' });
+        mealOptions.push({ type: 'Dinner', description: 'Baked salmon with roasted vegetables' });
+      } else if (bmi >= 18.5 && bmi < 25) {
+        // Normal weight
+        mealOptions.push({ type: 'Breakfast', description: 'Oatmeal with fruits and nuts' });
+        mealOptions.push({ type: 'Lunch', description: 'Turkey sandwich with whole wheat bread' });
+        mealOptions.push({ type: 'Dinner', description: 'Grilled vegetables with brown rice' });
+      } else {
+        // Overweight or Obese
+        mealOptions.push({ type: 'Breakfast', description: 'Greek yogurt with berries and granola' });
+        mealOptions.push({ type: 'Lunch', description: 'Vegetable stir-fry with tofu' });
+        mealOptions.push({ type: 'Dinner', description: 'Quinoa salad with mixed greens and grilled chicken' });
+      }
+
+      return mealOptions;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Workout Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #000;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      font-size: 50px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    select, input[type="number"] {
+      padding: 8px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      background-color: #333;
+      color: #fff;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #00ff00, #008000);
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #00cc00, #006600);
+    }
+    #result {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .workout-link {
+      color: #00ff00;
+      text-decoration: none;
+    }
+    .workout-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Custom Workout Generator</h1>
+  <form id="workoutForm">
+    <label for="bodyPart">Select Body Part:</label>
+    <select id="bodyPart">
+      <option value="arms">Arms</option>
+      <option value="legs">Legs</option>
+      <option value="chest">Chest</option>
+      <option value="back">Back</option>
+      <option value="abs">Abs</option>
+    </select>
+    <label for="difficulty">Select Difficulty:</label>
+    <select id="difficulty">
+      <option value="beginner">Beginner</option>
+      <option value="intermediate">Intermediate</option>
+      <option value="advanced">Advanced</option>
+    </select>
+    <label for="duration">Duration (minutes):</label>
+    <input type="number" id="duration" min="10" max="120" step="10" value="30">
+    <label for="equipment">Equipment Available:</label>
+    <select id="equipment">
+      <option value="none">None (Bodyweight Only)</option>
+      <option value="dumbbells">Dumbbells</option>
+      <option value="barbell">Barbell</option>
+      <option value="machines">Gym Machines</option>
+    </select>
+    <button type="button" onclick="generateWorkout()">Generate Workout</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    function generateWorkout() {
+      // Retrieve user inputs
+      var bodyPart = document.getElementById('bodyPart').value;
+      var difficulty = document.getElementById('difficulty').value;
+      var duration = parseInt(document.getElementById('duration').value);
+      var equipment = document.getElementById('equipment').value;
+      
+      // Workout suggestions for arms
+      var workout = "";
+      if (bodyPart === 'arms') {
+        workout = generateArmWorkout(duration, difficulty);
+      } else if (bodyPart === 'legs') {
+        workout = generateLegWorkout(duration, difficulty);
+      } else if (bodyPart === 'chest') {
+        workout = generateChestWorkout(duration, difficulty);
+      } else if (bodyPart === 'back') {
+        workout = generateBackWorkout(duration, difficulty);
+      } else if (bodyPart === 'abs') {
+        workout = generateAbsWorkout(duration, difficulty);
+      }
+
+      // Display the generated workout
+      document.getElementById('result').innerHTML = workout;
+    }
+
+    function generateArmWorkout(duration, difficulty) {
+      // Define exercise sets based on difficulty level
+      var exercises = [];
+      if (difficulty === 'beginner') {
+        exercises = [
+          { name: 'Tricep Dip', sets: 2, reps: 12 },
+          { name: 'Reverse Plank', sets: 4, holdTime: 15 },
+          { name: 'Eccentric Push Up', sets: 3, reps: 10 },
+          { name: 'Plank Shoulder Tap', sets: 'UNTIL FAILURE', reps: 10, eachSide: true },
+          { name: 'Tricep Pushup', sets: 4, reps: 10 },
+          { name: 'Plank with Bodyweight Row', sets: 3, reps: 10, eachSide: true }
+        ];
+      } else if (difficulty === 'intermediate') {
+        // Intermediate level exercises
+        exercises = [
+        { name: 'Inchworm', sets: 5, reps: 12 },
+        { name: 'Reverse Plank', sets: 6, holdTime: 15 },
+        { name: 'Eccentric Push Up', sets: 5, reps: 10 },
+        { name: 'Plank Shoulder Tap', sets: 5, reps: 10, eachSide: true },
+        { name: 'Tricep Pushup', sets: 6, reps: 10 },
+        { name: 'Plank with Bodyweight Row', sets: 4, reps: 10, eachSide: true }
+      ];  
+      } 
+      else if (difficulty === 'advanced') {
+        // Advanced level exercises
+        exercises = [
+        { name: 'Inchworm', sets: 10, reps: 12 },
+        { name: 'Reverse Plank', sets: 11, holdTime: 15 },
+        { name: 'Eccentric Push Up', sets: 9, reps: 10 },
+        { name: 'Plank Shoulder Tap', sets: 14, reps: 10, eachSide: true },
+        { name: 'Tricep Pushup', sets: 12, reps: 10 },
+        { name: 'Plank with Bodyweight Row', sets: 10, reps: 10, eachSide: true }
+      ];  
+      }
+
+      // Calculate duration and rest time for each exercise
+      var setsTotal = exercises.reduce((total, exercise) => total + exercise.sets, 0);
+      var exerciseDuration = Math.floor(duration / setsTotal);
+      var restDuration = Math.floor(Math.random() * 5) + 1; // Random rest time between 1 to 5 minutes
+
+      // Generate workout HTML
+      var workoutHTML = "<h2>Arm Workout</h2>";
+      exercises.forEach((exercise, index) => {
+        workoutHTML += "<p><strong>" + (index + 1) + ". <a href='https://www.health.com/fitness/arm-workouts-at-home' class='workout-link'>" + exercise.name + "</a>:</strong> ";
+        if (exercise.reps) {
+          workoutHTML += exercise.reps + " reps";
+        }
+        if (exercise.holdTime) {
+          workoutHTML += exercise.holdTime + " seconds hold";
+        }
+        if (exercise.eachSide) {
+          workoutHTML += " each side";
+        }
+        workoutHTML += "</p>";
+        if (index < exercises.length - 1) {
+          workoutHTML += "<p>Rest for " + restDuration++ + " minutes</p>";
+          ++restDuration;
+        }
+      });
+
+      return workoutHTML;
+    }
+
+    // Implement similar functions for other body parts (legs, chest, back, abs) and difficulty levels
+
+  </script>
+</body>
+</html>

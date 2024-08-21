@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Body Fat Percentage Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10:wght@400&family=Jersey+25&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: black;
+            color: white;
+        }
+        h1 {
+            color: white;
+            font-size: 48px; /* Increased font size */
+            font-family: 'Jersey 25', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 10px;
+            display: inline-block;
+            background-color: black;
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%; /* Added */
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 18px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        select {
+            cursor: pointer;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            color: green; /* Changed color to green */
+            font-size: 20px;
+        }
+        #suggestions {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Body Fat Percentage Calculator</h1>
+    <form id="bodyFatCalculator">
+        <label for="gender">Gender:</label>
+        <select id="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <label for="age">Age (years):</label>
+        <input type="number" id="age" required>
+        <label for="height">Height (inches):</label>
+        <input type="number" id="height" required>
+        <label for="neck">Neck Circumference (inches):</label>
+        <input type="number" id="neck" required>
+        <label for="waist">Waist Circumference (inches):</label>
+        <input type="number" id="waist" required>
+        <label for="hip" id="hipLabel" style="display: none;">Hip Circumference (inches):</label>
+        <input type="number" id="hip" style="display: none;">
+        <button type="button" onclick="calculateBodyFat()">Calculate</button>
+    </form>
+    <div id="result"></div>
+    <div id="fatRangeInfo"></div>
+    <div id="suggestions">
+        <p>Your body fat is above/below the ideal value according to WHO. You may consider:</p>
+        <button onclick="location.href='diet-plans.html'">Diet Plans</button>
+        <button onclick="location.href='workouts.html'">Workouts</button>
+    </div>
+
+    <script>
+        function calculateBodyFat() {
+            var gender = document.getElementById('gender').value;
+            var age = parseFloat(document.getElementById('age').value);
+            var height = parseFloat(document.getElementById('height').value);
+            var neck = parseFloat(document.getElementById('neck').value);
+            var waist = parseFloat(document.getElementById('waist').value);
+            var hip = parseFloat(document.getElementById('hip').value);
+        
+            var bodyFatPercentage;
+            if (gender === 'male') {
+                bodyFatPercentage = 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(height) + 36.76;
+            } else if (gender === 'female') {
+                bodyFatPercentage = 163.205 * Math.log10(waist + hip - neck) - 97.684 * Math.log10(height) - 78.387;
+            }
+        
+            document.getElementById('result').innerHTML = "Estimated Body Fat Percentage: " + bodyFatPercentage.toFixed(2) + "%";
+        
+            // Display message based on WHO recommendations
+            var fatRangeInfo = document.getElementById('fatRangeInfo');
+            var suggestions = document.getElementById('suggestions');
+            if (age >= 20 && age <= 39) {
+                if (gender === 'female' && bodyFatPercentage >= 21 && bodyFatPercentage <= 32) {
+                    fatRangeInfo.innerHTML = "Your body fat is within the ideal range according to WHO.";
+                } else if (gender === 'male' && bodyFatPercentage >= 8 && bodyFatPercentage <= 19) {
+                    fatRangeInfo.innerHTML = "Your body fat is within the ideal range according to WHO.";
+                } else {
+                    if (bodyFatPercentage < 21 && gender === 'female') {
+                        fatRangeInfo.innerHTML = "Your body fat is below the ideal value according to WHO. You may consider:";
+                    } else if (bodyFatPercentage > 32 && gender === 'female') {
+                        fatRangeInfo.innerHTML = "Your body fat is above the ideal value according to WHO. You may consider:";
+                    } else if (bodyFatPercentage < 8 && gender === 'male') {
+                        fatRangeInfo.innerHTML = "Your body fat is below the ideal value according to WHO. You may consider:";
+                    } else if (bodyFatPercentage > 19 && gender === 'male') {
+                        fatRangeInfo.innerHTML = "Your body fat is above the ideal value according to WHO. You may consider:";
+                    }
+                    suggestions.style.display = 'block';
+                }
+            } else if (age >= 40 && age <= 59) {
+                // Similar checks for other age ranges
+                // Add your code here
+            } else if (age >= 60 && age <= 79) {
+                // Similar checks for other age ranges
+                // Add your code here
+            } else {
+                fatRangeInfo.innerHTML = "Age not within WHO recommendations.";
+            }
+        }
+        
+
+        document.getElementById('gender').addEventListener('change', function() {
+            var gender = this.value;
+            if (gender === 'female') {
+                document.getElementById('hipLabel').style.display = 'block';
+                document.getElementById('hip').style.display = 'block';
+            } else {
+                document.getElementById('hipLabel').style.display = 'none';
+                document.getElementById('hip').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
